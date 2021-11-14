@@ -11,11 +11,10 @@ using namespace std;
 /* *
  * This function will check the parameters at the beginning
  *
- * @param int argc                 its the number about how many parameters are in the execution
- * @param char argv             it's an array of chars, inside it, we have the arguments
+ * @param int argc              number about how many parameters are in the execution
+ * @param char argv             array of chars, inside it, we have the arguments
  * @return 0 on success
  */
-
 int parser(int argc, char* argv[]){
     int ret = 0;
     //Checking if the number of arguments its correct
@@ -57,15 +56,6 @@ int parser(int argc, char* argv[]){
  */
 
 int gravitational_force(int num_objects, set objects, double time_step, double *force, double *accel) {
-
-    double powSqX;
-    double powSqY;
-    double powSqZ;
-    double norm;
-    double fx;
-    double fy;
-    double fz;
-    
     // The execution will pass through two nested loops to obtain the sum of gravitational forces of every point with
     // the other points. Analogous to take a screenshot of the system before updating speeds and positions.
     #pragma omp parallel
@@ -296,6 +286,9 @@ int write_config(int id, parameters system_data, set objects){
 }
 
 int main(int argc, char* argv[]) {
+
+    omp_set_num_threads(NUM_THREADS);
+
     /*The array of parameters argv passes through a parser to check all the arguments are correct*/
     int retcode = parser(argc, argv);
     /*The result of the parser will be equal to -1 or -2 if there are errors with the arguments*/
@@ -306,11 +299,9 @@ int main(int argc, char* argv[]) {
 
         /*The main function will return retcode, which can be equal to -1 if there are not enough
          * arguments and -2 if the arguments are not correct*/
-        if (retcode == 1){
+        if (retcode == 1)
         	return -1;
-        } else{
-        	return -2;
-        }
+        return -2;
     }
 
     /* Store simulation arguments in a structure */
@@ -392,3 +383,6 @@ int main(int argc, char* argv[]) {
     free(force);
     return 0;
 }
+
+
+
