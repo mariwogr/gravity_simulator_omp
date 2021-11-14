@@ -68,19 +68,31 @@ int gravitational_force(int num_objects, set objects, double time_step, double *
     
     // The execution will pass through two nested loops to obtain the sum of gravitational forces of every point with
     // the other points. Analogous to take a screenshot of the system before updating speeds and positions.
-    for(int i = 0; i < num_objects; i++) {
-        if (objects.active[i]) {
-            for (int j = i + 1; j < num_objects; j++) {
-                if (objects.active[j]) {
-                    powSqX  = (objects.x[j] - objects.x[i]) * (objects.x[j] - objects.x[i]);
-                    powSqY  = (objects.y[j] - objects.y[i]) * (objects.y[j] - objects.y[i]);
-                    powSqZ  = (objects.z[j] - objects.z[i]) * (objects.z[j] - objects.z[i]);
-                    norm = std::sqrt(powSqX + powSqY + powSqZ);
-                    // It will return the three components of the gravitational force between i and j
+    #pragma omp parallel
+    {
+        double powSqX;
+        double powSqY;
+        double powSqZ;
+        double norm;
+        double fx;
+        double fy;
+        double fz;
 
-                    fx = (G * objects.m[i] * objects.m[j] * (objects.x[j] - objects.x[i]))/(norm * norm * norm);
-                    fy = (G * objects.m[i] * objects.m[j] * (objects.y[j] - objects.y[i]))/(norm * norm * norm);
-                    fz = (G * objects.m[i] * objects.m[j] * (objects.z[j] - objects.z[i]))/(norm * norm * norm);
+        int t = omp_get_thread_num();
+
+        for (int i = t; i < num_objects; i = i + NUM_THREADS) {
+            if (objects.active[i]) {
+                for (int j = i + 1; j < num_objects; j++) {
+                    if (objects.active[j]) {
+                        powSqX = (objects.x[j] - objects.x[i]) * (objects.x[j] - objects.x[i]);
+                        powSqY = (objects.y[j] - objects.y[i]) * (objects.y[j] - objects.y[i]);
+                        powSqZ = (objects.z[j] - objects.z[i]) * (objects.z[j] - objects.z[i]);
+                        norm = std::sqrt(powSqX + powSqY + powSqZ);
+                        // It will return the three components of the gravitational force between i and j
+
+                        fx = (G * objects.m[i] * objects.m[j] * (objects.x[j] - objects.x[i])) / (norm * norm * norm);
+                        fy = (G * objects.m[i] * objects.m[j] * (objects.y[j] - objects.y[i])) / (norm * norm * norm);
+                        fz = (G * objects.m[i] * objects.m[j] * (objects.z[j] - objects.z[i])) / (norm * norm * norm);
 
                         force[3 * i] += fx;
                         force[3 * i + 1] += fy;
@@ -335,13 +347,12 @@ int main(int argc, char* argv[]) {
 
     /* Initialize x, y, z and m attributes of each object */
     for(int i = 0; i < system_data.num_objects; i++){
-        objects.x[i] = position_unif_dist(gen64);
-        objects.y[i] = position_unif_dist(gen64);
-        objects.z[i] = position_unif_dist(gen64);
-        objects.m[i] = mass_norm_dist(gen64);
-        objects.active[i] = true;
+            objects.x[i] = position_unif_dist(gen64);
+            objects.y[i] = position_unif_dist(gen64);
+            objects.z[i] = position_unif_dist(gen64);
+            objects.m[i] = mass_norm_dist(gen64);
+            objects.active[i] = true;
     }
-
 
     /* Write initial configuration to a file*/
     write_config(0, system_data, objects);
