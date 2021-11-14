@@ -1,0 +1,4 @@
+/home/mariwogr/Documentos/ARCOS/gravity_simulator_omp/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/mariwogr/Documentos/ARCOS/gravity_simulator_omp/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/mariwogr/Documentos/ARCOS/gravity_simulator_omp/cmake-build-debug/CMakeFiles/gravity_simulator.dir
+/home/mariwogr/Documentos/ARCOS/gravity_simulator_omp/cmake-build-debug/CMakeFiles/psoa.dir

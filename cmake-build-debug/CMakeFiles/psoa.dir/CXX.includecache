@@ -1,0 +1,24 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/mariwogr/Documentos/ARCOS/gravity_simulator_omp/psoa.cpp
+string
+-
+iostream
+-
+fstream
+-
+random
+-
+omp.h
+-
+psoa.hpp
+/home/mariwogr/Documentos/ARCOS/gravity_simulator_omp/psoa.hpp
+
+/home/mariwogr/Documentos/ARCOS/gravity_simulator_omp/psoa.hpp
+

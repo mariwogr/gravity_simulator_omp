@@ -2,8 +2,9 @@
 #include <iostream>
 #include <fstream>
 #include <random>
+#include <omp.h>
 
-#include "sim_aos.hpp"
+#include "paos.hpp"
 
 using namespace std;
 

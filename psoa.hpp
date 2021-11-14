@@ -2,8 +2,8 @@
 // Created by mariwogr on 10/10/21.
 //
 
-#ifndef GRAVITY_SIMULATOR_SIM_SOA_HPP
-#define GRAVITY_SIMULATOR_SIM_SOA_HPP
+#ifndef GRAVITY_SIMULATOR_PSOA_HPP
+#define GRAVITY_SIMULATOR_PSOA_HPP
 
 #define INVALID_NUM_ARGS 1
 #define INVALID_NUM_OBJS 2
@@ -40,4 +40,4 @@ int parser(int argc, char* argv[]);
 int print_error_args(int argc, char* argv[], int error_code);
 int write_config(int id, parameters system_data, set params);
 
-#endif //GRAVITY_SIMULATOR_SIM_SOA_HPP
+#endif //GRAVITY_SIMULATOR_PSOA_HPP

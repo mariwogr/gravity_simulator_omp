@@ -2,8 +2,9 @@
 #include <iostream>
 #include <fstream>
 #include <random>
+#include <omp.h>
 
-#include "sim_soa.hpp"
+#include "psoa.hpp"
 
 using namespace std;
 
@@ -81,12 +82,13 @@ int gravitational_force(int num_objects, set objects, double time_step, double *
                     fy = (G * objects.m[i] * objects.m[j] * (objects.y[j] - objects.y[i]))/(norm * norm * norm);
                     fz = (G * objects.m[i] * objects.m[j] * (objects.z[j] - objects.z[i]))/(norm * norm * norm);
 
-                    force[3*i] += fx;
-                    force[3*i + 1] += fy;
-                    force[3*i + 2] += fz;
-                    force[3*j] -= fx;
-                    force[3*j + 1] -= fy;
-                    force[3*j + 2] -= fz;
+                        force[3 * i] += fx;
+                        force[3 * i + 1] += fy;
+                        force[3 * i + 2] += fz;
+                        force[3 * j] -= fx;
+                        force[3 * j + 1] -= fy;
+                        force[3 * j + 2] -= fz;
+                    }
                 }
             }
         }

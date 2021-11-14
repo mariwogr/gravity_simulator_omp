@@ -1,0 +1,1 @@
+/usr/bin/c++ -g CMakeFiles/gravity_simulator.dir/psoa.cpp.o -o gravity_simulator 
