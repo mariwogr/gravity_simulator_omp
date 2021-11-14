@@ -1,0 +1,3 @@
+/home/sergio/repos/gravity_simulator_omp/cmake-build-release/CMakeFiles/rebuild_cache.dir
+/home/sergio/repos/gravity_simulator_omp/cmake-build-release/CMakeFiles/edit_cache.dir
+/home/sergio/repos/gravity_simulator_omp/cmake-build-release/CMakeFiles/psoa.dir

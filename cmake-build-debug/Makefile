@@ -57,23 +57,13 @@ RM = /snap/clion/169/bin/cmake/linux/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/mariwogr/Documentos/ARCOS/gravity_simulator_omp
+CMAKE_SOURCE_DIR = /home/sergio/repos/gravity_simulator_omp
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/mariwogr/Documentos/ARCOS/gravity_simulator_omp/cmake-build-debug
+CMAKE_BINARY_DIR = /home/sergio/repos/gravity_simulator_omp/cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
-
-# Special rule for the target edit_cache
-edit_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
-	/snap/clion/169/bin/cmake/linux/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
-.PHONY : edit_cache
-
-# Special rule for the target edit_cache
-edit_cache/fast: edit_cache
-.PHONY : edit_cache/fast
 
 # Special rule for the target rebuild_cache
 rebuild_cache:
@@ -85,11 +75,21 @@ rebuild_cache:
 rebuild_cache/fast: rebuild_cache
 .PHONY : rebuild_cache/fast
 
+# Special rule for the target edit_cache
+edit_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
+	/snap/clion/169/bin/cmake/linux/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+.PHONY : edit_cache
+
+# Special rule for the target edit_cache
+edit_cache/fast: edit_cache
+.PHONY : edit_cache/fast
+
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/mariwogr/Documentos/ARCOS/gravity_simulator_omp/cmake-build-debug/CMakeFiles /home/mariwogr/Documentos/ARCOS/gravity_simulator_omp/cmake-build-debug//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/sergio/repos/gravity_simulator_omp/cmake-build-debug/CMakeFiles /home/sergio/repos/gravity_simulator_omp/cmake-build-debug//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/mariwogr/Documentos/ARCOS/gravity_simulator_omp/cmake-build-debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/sergio/repos/gravity_simulator_omp/cmake-build-debug/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -117,19 +117,6 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named gravity_simulator
-
-# Build rule for target.
-gravity_simulator: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gravity_simulator
-.PHONY : gravity_simulator
-
-# fast build rule for target.
-gravity_simulator/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity_simulator.dir/build.make CMakeFiles/gravity_simulator.dir/build
-.PHONY : gravity_simulator/fast
-
-#=============================================================================
 # Target rules for targets named psoa
 
 # Build rule for target.
@@ -147,7 +134,6 @@ psoa.o: psoa.cpp.o
 
 # target to build an object file
 psoa.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity_simulator.dir/build.make CMakeFiles/gravity_simulator.dir/psoa.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/psoa.dir/build.make CMakeFiles/psoa.dir/psoa.cpp.o
 .PHONY : psoa.cpp.o
 
@@ -156,7 +142,6 @@ psoa.i: psoa.cpp.i
 
 # target to preprocess a source file
 psoa.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity_simulator.dir/build.make CMakeFiles/gravity_simulator.dir/psoa.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/psoa.dir/build.make CMakeFiles/psoa.dir/psoa.cpp.i
 .PHONY : psoa.cpp.i
 
@@ -165,7 +150,6 @@ psoa.s: psoa.cpp.s
 
 # target to generate assembly for a file
 psoa.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity_simulator.dir/build.make CMakeFiles/gravity_simulator.dir/psoa.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/psoa.dir/build.make CMakeFiles/psoa.dir/psoa.cpp.s
 .PHONY : psoa.cpp.s
 
@@ -177,7 +161,6 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... gravity_simulator"
 	@echo "... psoa"
 	@echo "... psoa.o"
 	@echo "... psoa.i"

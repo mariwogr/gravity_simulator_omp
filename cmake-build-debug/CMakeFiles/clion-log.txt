@@ -1,4 +1,4 @@
-/snap/clion/169/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_DEPENDS_USE_COMPILER=FALSE -G "CodeBlocks - Unix Makefiles" /home/mariwogr/Documentos/ARCOS/gravity_simulator_omp
+/snap/clion/169/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_DEPENDS_USE_COMPILER=FALSE -G "CodeBlocks - Unix Makefiles" /home/sergio/repos/gravity_simulator_omp
 -- Configuring done
 -- Generating done
--- Build files have been written to: /home/mariwogr/Documentos/ARCOS/gravity_simulator_omp/cmake-build-debug
+-- Build files have been written to: /home/sergio/repos/gravity_simulator_omp/cmake-build-debug

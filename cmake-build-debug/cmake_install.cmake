@@ -1,4 +1,4 @@
-# Install script for directory: /home/mariwogr/Documentos/ARCOS/gravity_simulator_omp
+# Install script for directory: /home/sergio/repos/gravity_simulator_omp
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/mariwogr/Documentos/ARCOS/gravity_simulator_omp/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/sergio/repos/gravity_simulator_omp/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

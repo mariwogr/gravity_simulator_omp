@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/mariwogr/Documentos/ARCOS/gravity_simulator_omp/psoa.cpp
+/home/sergio/repos/gravity_simulator_omp/psoa.cpp
 string
 -
 iostream
@@ -18,7 +18,7 @@ random
 omp.h
 -
 psoa.hpp
-/home/mariwogr/Documentos/ARCOS/gravity_simulator_omp/psoa.hpp
+/home/sergio/repos/gravity_simulator_omp/psoa.hpp
 
-/home/mariwogr/Documentos/ARCOS/gravity_simulator_omp/psoa.hpp
+/home/sergio/repos/gravity_simulator_omp/psoa.hpp
 
