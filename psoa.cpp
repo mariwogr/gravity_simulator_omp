@@ -69,56 +69,55 @@ int gravitational_force(int num_objects, set objects, double time_step, double *
         double fx;
         double fy;
         double fz;
-        //int t = 0;
-        //int t = omp_get_thread_num();
-        //#pragma omp critical
-        //cout << t << endl;
-
         //for (int i = t; i < num_objects; i = i + NUM_THREADS) {
     for (int i = 0; i < num_objects; i = i + 1) {
         if (objects.active[i]) {
-                omp_set_num_threads(NUM_THREADS);
-                //#pragma omp parallel default(none) shared(num_objects, powSqX, powSqY, powSqZ, norm, objects, fx, fy, fz, i, force, accel, cout)// private(t)
-            //int t = omp_get_thread_num();
-            #pragma omp parallel for
-                for (int j = i; j < num_objects; j = j + 1) {
-                    if (objects.active[j]) {
-                        powSqX = (objects.x[j] - objects.x[i]) * (objects.x[j] - objects.x[i]);
-                        powSqY = (objects.y[j] - objects.y[i]) * (objects.y[j] - objects.y[i]);
-                        powSqZ = (objects.z[j] - objects.z[i]) * (objects.z[j] - objects.z[i]);
-                        norm = std::sqrt(powSqX + powSqY + powSqZ);
-                        // It will return the three components of the gravitational force between i and j
+            omp_set_num_threads(NUM_THREADS);
+            #pragma omp parallel for default(none) shared(num_objects, objects, i, force, accel, cout) private(powSqX, powSqY, powSqZ, norm, fx, fy, fz)
+            for (int j = i + 1; j < num_objects; j = j + 1) {
+                if (objects.active[j]) {
+                    powSqX = (objects.x[j] - objects.x[i]) * (objects.x[j] - objects.x[i]);
+                    powSqY = (objects.y[j] - objects.y[i]) * (objects.y[j] - objects.y[i]);
+                    powSqZ = (objects.z[j] - objects.z[i]) * (objects.z[j] - objects.z[i]);
+                    norm = std::sqrt(powSqX + powSqY + powSqZ);
+                    // It will return the three components of the gravitational force between i and j
 
-                        fx = (G * objects.m[i] * objects.m[j] * (objects.x[j] - objects.x[i])) / (norm * norm * norm);
-                        fy = (G * objects.m[i] * objects.m[j] * (objects.y[j] - objects.y[i])) / (norm * norm * norm);
-                        fz = (G * objects.m[i] * objects.m[j] * (objects.z[j] - objects.z[i])) / (norm * norm * norm);
+                    fx = (G * objects.m[i] * objects.m[j] * (objects.x[j] - objects.x[i])) / (norm * norm * norm);
+                    fy = (G * objects.m[i] * objects.m[j] * (objects.y[j] - objects.y[i])) / (norm * norm * norm);
+                    fz = (G * objects.m[i] * objects.m[j] * (objects.z[j] - objects.z[i])) / (norm * norm * norm);
 
-                        #pragma omp critical
-                        cout << " " << fx << " " << fy << " " << fz << endl;
+                    //#pragma omp critical
+                    //cout << omp_get_thread_num() << " " << i << " " << j << " " << fx << endl;
 
-                        force[3 * i] += fx;
-                        force[3 * i + 1] += fy;
-                        force[3 * i + 2] += fz;
-                        force[3 * j] -= fx;
-                        force[3 * j + 1] -= fy;
-                        force[3 * j + 2] -= fz;
-                    }
+                    force[3 * i] += fx;
+                    force[3 * i + 1] += fy;
+                    force[3 * i + 2] += fz;
+                    force[3 * j] -= fx;
+                    force[3 * j + 1] -= fy;
+                    force[3 * j + 2] -= fz;
+                    //#pragma omp critical
+                    //cout << omp_get_thread_num() << " " << i << " " << force[3 * i] << endl;
                 }
+            }
         }
-        }
+    }
     // Once we have a screenshot of the system in force array, update each active object
     for (int i = 0; i < num_objects; i++) {
         if(objects.active[i]) {
+            //cout << i << endl;
             // Updates the acceleration
             accel[0] = 1.0/objects.m[i] * force[i * 3];
             accel[1] = 1.0/objects.m[i] * force[(i * 3) + 1];
             accel[2] = 1.0/objects.m[i] * force[(i * 3) + 2];
+            //cout << "------------------" << endl;
+            //cout << objects.m[i] << " " << force[i * 3] << " " << accel[0] << endl;
 
             // Updates the speed
+            //cout << objects.vx[i] << endl;
             objects.vx[i] = objects.vx[i] + accel[0] * time_step;
             objects.vy[i] = objects.vy[i] + accel[1] * time_step;
             objects.vz[i] = objects.vz[i] + accel[2] * time_step;
-
+            //cout << objects.vx[i] << endl;
             // Updates the position
             objects.x[i] = objects.x[i] + objects.vx[i] * time_step;
             objects.y[i] = objects.y[i] + objects.vy[i] * time_step;
@@ -341,21 +340,23 @@ int main(int argc, char* argv[]) {
     uniform_real_distribution<> position_unif_dist(0, system_data.size_enclosure);
     normal_distribution<> mass_norm_dist{1E21, 1E15};
 
-    double *force = (double *) malloc(sizeof(double) * system_data.num_objects * 3);
+    auto *force = (double *) malloc(sizeof(double) * system_data.num_objects * 3);
     double accel[3] = {0,0,0};
 
-    /* Initialize x, y, z and m attributes of each object */
+    /* Initialize attributes of each object */
     for(int i = 0; i < system_data.num_objects; i++){
         objects.x[i] = position_unif_dist(gen64);
         objects.y[i] = position_unif_dist(gen64);
         objects.z[i] = position_unif_dist(gen64);
+        objects.vx[i] = 0;
+        objects.vy[i] = 0;
+        objects.vz[i] = 0;
         objects.m[i] = mass_norm_dist(gen64);
         objects.active[i] = true;
     }
 
     /* Write initial configuration to a file*/
     write_config(0, system_data, objects);
-
 
     /* Initial collision checking */
     for(int i = 0; i < system_data.num_objects; i++){
