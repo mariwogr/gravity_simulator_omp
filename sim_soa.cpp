@@ -2,44 +2,44 @@
 #include <iostream>
 #include <fstream>
 #include <random>
-#include <omp.h>
 
-#include "psoa.hpp"
+#include "sim_soa.hpp"
 
 using namespace std;
 
 /* *
  * This function will check the parameters at the beginning
  *
- * @param int argc              number about how many parameters are in the execution
- * @param char argv             array of chars, inside it, we have the arguments
+ * @param int argc                 its the number about how many parameters are in the execution
+ * @param char argv             it's an array of chars, inside it, we have the arguments
  * @return 0 on success
  */
+
 int parser(int argc, char* argv[]){
     int ret = 0;
     //Checking if the number of arguments its correct
     if (argc != 6 ){
         ret |= INVALID_NUM_ARGS;
     } else{
-        //checking if the number of objs is smaller than zero
-        if ( stoi(argv[1]) <= 0 )
-            ret |= INVALID_NUM_OBJS;
+	    //checking if the number of objs is smaller than zero
+	    if ( stoi(argv[1]) <= 0 )
+		    ret |= INVALID_NUM_OBJS;
 
-        //checking if the number of iterations is smaller than zero
-        if ( stoi(argv[2]) < 0 )
-            ret |= INVALID_NUM_ITER;
+	    //checking if the number of iterations is smaller than zero
+	    if ( stoi(argv[2]) < 0 )
+		    ret |= INVALID_NUM_ITER;
 
-        //checking the seed if it's a positive number
-        if ( stoi(argv[3]) <= 0 )
-            ret |= INVALID_SEED;
+	    //checking the seed if it's a positive number
+	    if ( stoi(argv[3]) <= 0 )
+		    ret |= INVALID_SEED;
 
-        //checking if size_enclosure is positive
-        if ( stod(argv[4]) <= 0.0 )
-            ret |= INVALID_SIZE;
+	    //checking if size_enclosure is positive
+	    if ( stod(argv[4]) <= 0.0 )
+		    ret |= INVALID_SIZE;
 
-        //checking if time_step is a real number positive
-        if ( stod(argv[5]) <= 0.0 )
-            ret |= INVALID_TIME_STP;
+	    //checking if time_step is a real number positive
+	    if ( stod(argv[5]) <= 0.0 )
+		    ret |= INVALID_TIME_STP;
     }
     return ret;
 }
@@ -56,56 +56,41 @@ int parser(int argc, char* argv[]){
  */
 
 int gravitational_force(int num_objects, set objects, double time_step, double *force, double *accel) {
+
+    double powSqX;
+    double powSqY;
+    double powSqZ;
+    double norm;
+    double fx;
+    double fy;
+    double fz;
+    
     // The execution will pass through two nested loops to obtain the sum of gravitational forces of every point with
     // the other points. Analogous to take a screenshot of the system before updating speeds and positions.
-
-    //omp_set_num_threads(NUM_THREADS);
-    //#pragma omp parallel default(none) shared(num_objects, objects, time_step, force, accel, cout)
-    //{
-        double powSqX;
-        double powSqY;
-        double powSqZ;
-        double norm;
-        double fx;
-        double fy;
-        double fz;
-        //int t = 0;
-        //int t = omp_get_thread_num();
-        //#pragma omp critical
-        //cout << t << endl;
-
-        //for (int i = t; i < num_objects; i = i + NUM_THREADS) {
-    for (int i = 0; i < num_objects; i = i + 1) {
+    for(int i = 0; i < num_objects; i++) {
         if (objects.active[i]) {
-                omp_set_num_threads(NUM_THREADS);
-                //#pragma omp parallel default(none) shared(num_objects, powSqX, powSqY, powSqZ, norm, objects, fx, fy, fz, i, force, accel, cout)// private(t)
-            //int t = omp_get_thread_num();
-            #pragma omp parallel for
-                for (int j = i; j < num_objects; j = j + 1) {
-                    if (objects.active[j]) {
-                        powSqX = (objects.x[j] - objects.x[i]) * (objects.x[j] - objects.x[i]);
-                        powSqY = (objects.y[j] - objects.y[i]) * (objects.y[j] - objects.y[i]);
-                        powSqZ = (objects.z[j] - objects.z[i]) * (objects.z[j] - objects.z[i]);
-                        norm = std::sqrt(powSqX + powSqY + powSqZ);
-                        // It will return the three components of the gravitational force between i and j
+            for (int j = i + 1; j < num_objects; j++) {
+                if (objects.active[j]) {
+                    powSqX  = (objects.x[j] - objects.x[i]) * (objects.x[j] - objects.x[i]);
+                    powSqY  = (objects.y[j] - objects.y[i]) * (objects.y[j] - objects.y[i]);
+                    powSqZ  = (objects.z[j] - objects.z[i]) * (objects.z[j] - objects.z[i]);
+                    norm = std::sqrt(powSqX + powSqY + powSqZ);
+                    // It will return the three components of the gravitational force between i and j
 
-                        fx = (G * objects.m[i] * objects.m[j] * (objects.x[j] - objects.x[i])) / (norm * norm * norm);
-                        fy = (G * objects.m[i] * objects.m[j] * (objects.y[j] - objects.y[i])) / (norm * norm * norm);
-                        fz = (G * objects.m[i] * objects.m[j] * (objects.z[j] - objects.z[i])) / (norm * norm * norm);
+                    fx = (G * objects.m[i] * objects.m[j] * (objects.x[j] - objects.x[i]))/(norm * norm * norm);
+                    fy = (G * objects.m[i] * objects.m[j] * (objects.y[j] - objects.y[i]))/(norm * norm * norm);
+                    fz = (G * objects.m[i] * objects.m[j] * (objects.z[j] - objects.z[i]))/(norm * norm * norm);
 
-                        #pragma omp critical
-                        cout << " " << fx << " " << fy << " " << fz << endl;
-
-                        force[3 * i] += fx;
-                        force[3 * i + 1] += fy;
-                        force[3 * i + 2] += fz;
-                        force[3 * j] -= fx;
-                        force[3 * j + 1] -= fy;
-                        force[3 * j + 2] -= fz;
-                    }
+                    force[3*i] += fx;
+                    force[3*i + 1] += fy;
+                    force[3*i + 2] += fz;
+                    force[3*j] -= fx;
+                    force[3*j + 1] -= fy;
+                    force[3*j + 2] -= fz;
                 }
+            }
         }
-        }
+    }
     // Once we have a screenshot of the system in force array, update each active object
     for (int i = 0; i < num_objects; i++) {
         if(objects.active[i]) {
@@ -223,17 +208,17 @@ int print_error_args(int argc, char* argv[], int error_code) {
     /*This function will print in the standard output the parameters when the function was called
       and it will show the errors while doing it.*/
     if(error_code & INVALID_NUM_OBJS)
-        cerr << "Error: Invalid number of objects" << endl;
+    	cerr << "Error: Invalid number of objects" << endl;
     if(error_code & INVALID_NUM_ITER)
-        cerr << "Error: Invalid number of iterations" << endl;
+    	cerr << "Error: Invalid number of iterations" << endl;
     if(error_code & INVALID_SEED)
-        cerr << "Error: Invalid seed" << endl;
+    	cerr << "Error: Invalid seed" << endl;
     if(error_code & INVALID_SIZE)
-        cerr << "Error: Invalid size enclosure" << endl;
+    	cerr << "Error: Invalid size enclosure" << endl;
     if(error_code & INVALID_TIME_STP)
-        cerr << "Error: Invalid time step" << endl;
+    	cerr << "Error: Invalid time step" << endl;
     if(error_code & INVALID_NUM_ARGS)
-        cerr << "Error: Wrong number of parameters" << endl;
+    	cerr << "Error: Wrong number of parameters" << endl;
     cerr << argv[0] << " invoked with " << argc - 1  << " parameters." << endl;
     cerr << "Arguments:" << endl;
 
@@ -270,10 +255,10 @@ int write_config(int id, parameters system_data, set objects){
 
     /*If the id is 0 it will write the content in the init_config file*/
     if (id == 0){
-        out_file.open("init_config.txt");
+        out_file.open("init_config_nuestro.txt");
     }
         /*If the id is different from 0 the content will be written in the final_config file*/
-    else { out_file.open("final_config.txt"); }
+    else { out_file.open("final_config_nuestro.txt"); }
 
     sprintf(res, "%.3f ", system_data.size_enclosure);
     out_file << res;
@@ -307,9 +292,11 @@ int main(int argc, char* argv[]) {
 
         /*The main function will return retcode, which can be equal to -1 if there are not enough
          * arguments and -2 if the arguments are not correct*/
-        if (retcode == 1)
-            return -1;
-        return -2;
+        if (retcode == 1){
+        	return -1;
+        } else{
+        	return -2;
+        }
     }
 
     /* Store simulation arguments in a structure */
@@ -353,6 +340,7 @@ int main(int argc, char* argv[]) {
         objects.active[i] = true;
     }
 
+
     /* Write initial configuration to a file*/
     write_config(0, system_data, objects);
 
@@ -369,17 +357,17 @@ int main(int argc, char* argv[]) {
     /* Body of the simulation */
     for(int i = 0; i < system_data.num_iterations; i++){
         for(int foo=0; foo < system_data.num_objects * 3; foo++){force[foo] = 0;}
-        gravitational_force(system_data.num_objects, objects, system_data.time_step, force, accel);
+            gravitational_force(system_data.num_objects, objects, system_data.time_step, force, accel);
 
-        for(int a = 0; a < system_data.num_objects; a++){
-            if (objects.active[a])
-                check_bounce(objects, a, system_data.size_enclosure);
-        }
-        for(int a = 0; a < system_data.num_objects; a++){
-            if(objects.active[a]){
-                for(int b = a + 1; b < system_data.num_objects; b++){
-                    if (objects.active[b]){
-                        check_collision(objects, a, b);
+            for(int a = 0; a < system_data.num_objects; a++){
+                if (objects.active[a])
+                    check_bounce(objects, a, system_data.size_enclosure);
+            }
+            for(int a = 0; a < system_data.num_objects; a++){
+                if(objects.active[a]){
+                    for(int b = a + 1; b < system_data.num_objects; b++){
+                        if (objects.active[b]){
+                            check_collision(objects, a, b);
                     }
                 }
             }
@@ -391,6 +379,3 @@ int main(int argc, char* argv[]) {
     free(force);
     return 0;
 }
-
-
-
