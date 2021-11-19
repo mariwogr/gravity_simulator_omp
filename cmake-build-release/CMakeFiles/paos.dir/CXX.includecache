@@ -1,0 +1,26 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/sergio/repos/gravity_simulator_omp/paos.cpp
+string
+-
+iostream
+-
+fstream
+-
+random
+-
+omp.h
+-
+chrono
+-
+paos.hpp
+/home/sergio/repos/gravity_simulator_omp/paos.hpp
+
+/home/sergio/repos/gravity_simulator_omp/paos.hpp
+

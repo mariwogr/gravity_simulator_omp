@@ -37,8 +37,8 @@
 					<DistClean command="/usr/bin/make -j8 -f &quot;/home/sergio/repos/gravity_simulator_omp/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
-			<Target title="psoa">
-				<Option output="/home/sergio/repos/gravity_simulator_omp/cmake-build-release/psoa" prefix_auto="0" extension_auto="0"/>
+			<Target title="paos">
+				<Option output="/home/sergio/repos/gravity_simulator_omp/cmake-build-release/paos" prefix_auto="0" extension_auto="0"/>
 				<Option working_dir="/home/sergio/repos/gravity_simulator_omp/cmake-build-release"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
@@ -53,14 +53,14 @@
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/home/sergio/repos/gravity_simulator_omp/cmake-build-release/Makefile&quot;  VERBOSE=1 psoa"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/sergio/repos/gravity_simulator_omp/cmake-build-release/Makefile&quot;  VERBOSE=1 paos"/>
 					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/sergio/repos/gravity_simulator_omp/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
 					<Clean command="/usr/bin/make -j8 -f &quot;/home/sergio/repos/gravity_simulator_omp/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
 					<DistClean command="/usr/bin/make -j8 -f &quot;/home/sergio/repos/gravity_simulator_omp/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
-			<Target title="psoa/fast">
-				<Option output="/home/sergio/repos/gravity_simulator_omp/cmake-build-release/psoa" prefix_auto="0" extension_auto="0"/>
+			<Target title="paos/fast">
+				<Option output="/home/sergio/repos/gravity_simulator_omp/cmake-build-release/paos" prefix_auto="0" extension_auto="0"/>
 				<Option working_dir="/home/sergio/repos/gravity_simulator_omp/cmake-build-release"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
@@ -75,18 +75,18 @@
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/home/sergio/repos/gravity_simulator_omp/cmake-build-release/Makefile&quot;  VERBOSE=1 psoa/fast"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/sergio/repos/gravity_simulator_omp/cmake-build-release/Makefile&quot;  VERBOSE=1 paos/fast"/>
 					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/sergio/repos/gravity_simulator_omp/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
 					<Clean command="/usr/bin/make -j8 -f &quot;/home/sergio/repos/gravity_simulator_omp/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
 					<DistClean command="/usr/bin/make -j8 -f &quot;/home/sergio/repos/gravity_simulator_omp/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/home/sergio/repos/gravity_simulator_omp/psoa.cpp">
-			<Option target="psoa"/>
+		<Unit filename="/home/sergio/repos/gravity_simulator_omp/paos.cpp">
+			<Option target="paos"/>
 		</Unit>
-		<Unit filename="/home/sergio/repos/gravity_simulator_omp/psoa.hpp">
-			<Option target="psoa"/>
+		<Unit filename="/home/sergio/repos/gravity_simulator_omp/paos.hpp">
+			<Option target="paos"/>
 		</Unit>
 		<Unit filename="/home/sergio/repos/gravity_simulator_omp/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>

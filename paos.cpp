@@ -3,6 +3,7 @@
 #include <fstream>
 #include <random>
 #include <omp.h>
+#include <chrono>
 
 #include "paos.hpp"
 
@@ -67,48 +68,53 @@ int gravitational_force(int num_objects, set *objects, double time_step, double 
     
     // The execution will pass through two nested loops to obtain the sum of gravitational forces of every point with
     // the other points. Analogous to take a screenshot of the system before updating speeds and positions.
-    for(int i = 0; i < num_objects; i++) {
-        if (objects[i].active) {
-            for (int j = i + 1; j < num_objects; j++) {
-                if (objects[j].active) {
-                    powSqX  = (objects[j].x - objects[i].x) * (objects[j].x - objects[i].x);
-                    powSqY  = (objects[j].y - objects[i].y) * (objects[j].y - objects[i].y);
-                    powSqZ  = (objects[j].z - objects[i].z) * (objects[j].z - objects[i].z);
-                    norm = std::sqrt(powSqX + powSqY + powSqZ);
-                    // It will return the three components of the gravitational force between i and j
 
-                    fx = (G * objects[i].m * objects[j].m * (objects[j].x - objects[i].x))/(norm * norm * norm);
-                    fy = (G * objects[i].m * objects[j].m * (objects[j].y - objects[i].y))/(norm * norm * norm);
-                    fz = (G * objects[i].m * objects[j].m * (objects[j].z - objects[i].z))/(norm * norm * norm);
+    omp_set_num_threads(NUM_THREADS);
+    #pragma omp for
+        for (int i = 0; i < num_objects; i++) {
+            if (objects[i].active) {
+                for (int j = i + 1; j < num_objects; j++) {
+                    if (objects[j].active) {
+                        powSqX = (objects[j].x - objects[i].x) * (objects[j].x - objects[i].x);
+                        powSqY = (objects[j].y - objects[i].y) * (objects[j].y - objects[i].y);
+                        powSqZ = (objects[j].z - objects[i].z) * (objects[j].z - objects[i].z);
+                        norm = std::sqrt(powSqX + powSqY + powSqZ);
+                        // It will return the three components of the gravitational force between i and j
 
-                    force[3*i] += fx;
-                    force[3*i + 1] += fy;
-                    force[3*i + 2] += fz;
-                    force[3*j] -= fx;
-                    force[3*j + 1] -= fy;
-                    force[3*j + 2] -= fz;
+                        fx = (G * objects[i].m * objects[j].m * (objects[j].x - objects[i].x)) / (norm * norm * norm);
+                        fy = (G * objects[i].m * objects[j].m * (objects[j].y - objects[i].y)) / (norm * norm * norm);
+                        fz = (G * objects[i].m * objects[j].m * (objects[j].z - objects[i].z)) / (norm * norm * norm);
+
+                        force[3 * i] += fx;
+                        force[3 * i + 1] += fy;
+                        force[3 * i + 2] += fz;
+                        force[3 * j] -= fx;
+                        force[3 * j + 1] -= fy;
+                        force[3 * j + 2] -= fz;
+                    }
                 }
             }
         }
-    }
-    // Once we have a screenshot of the system in force array, update each active object
-    for (int i = 0; i < num_objects; i++) {
-        if(objects[i].active) {
-            accel[0] = 1.0/objects[i].m * force[i * 3];
-            accel[1] = 1.0/objects[i].m * force[(i * 3) + 1];
-            accel[2] = 1.0/objects[i].m * force[(i * 3) + 2];
+    // Once we have a screenshot of the system in force array, update each active
+    omp_set_num_threads(NUM_THREADS);
+    #pragma omp for
+        for (int i = 0; i < num_objects; i++) {
+            if(objects[i].active) {
+                accel[0] = 1.0/objects[i].m * force[i * 3];
+                accel[1] = 1.0/objects[i].m * force[(i * 3) + 1];
+                accel[2] = 1.0/objects[i].m * force[(i * 3) + 2];
 
-            // Updates the speed
-            objects[i].vx = objects[i].vx + accel[0] * time_step;
-            objects[i].vy = objects[i].vy + accel[1] * time_step;
-            objects[i].vz = objects[i].vz + accel[2] * time_step;
+                // Updates the speed
+                objects[i].vx = objects[i].vx + accel[0] * time_step;
+                objects[i].vy = objects[i].vy + accel[1] * time_step;
+                objects[i].vz = objects[i].vz + accel[2] * time_step;
 
-            // Updates the position
-            objects[i].x = objects[i].x + objects[i].vx * time_step;
-            objects[i].y = objects[i].y + objects[i].vy * time_step;
-            objects[i].z = objects[i].z + objects[i].vz * time_step;
+                // Updates the position
+                objects[i].x = objects[i].x + objects[i].vx * time_step;
+                objects[i].y = objects[i].y + objects[i].vy * time_step;
+                objects[i].z = objects[i].z + objects[i].vz * time_step;
+            }
         }
-    }
     return 0;
 }
 
@@ -281,6 +287,10 @@ int write_config(int id, parameters system_data, set *objects){
 }
 
 int main(int argc, char* argv[]) {
+
+    using clk = std::chrono::high_resolution_clock;
+    auto start = clk::now();
+
     /*The array of parameters argv passes through a parser to check all the arguments are correct*/
     int retcode = parser(argc, argv);
     /*The result of the parser will be equal to -1 or -2 if there are errors with the arguments*/
@@ -291,11 +301,9 @@ int main(int argc, char* argv[]) {
 
         /*The main function will return retcode, which can be equal to -1 if there are not enough
          * arguments and -2 if the arguments are not correct*/
-        if (retcode == 1){
+        if (retcode == 1)
         	return -1;
-        } else{
-        	return -2;
-        }
+        return -2;
     }
 
     /* Store simulation arguments in a structure */
@@ -327,6 +335,9 @@ int main(int argc, char* argv[]) {
         objects[i].y = position_unif_dist(gen64);
         objects[i].z = position_unif_dist(gen64);
         objects[i].m = mass_norm_dist(gen64);
+        objects[i].vx = 0;
+        objects[i].vy = 0;
+        objects[i].vz = 0;
         objects[i].active = true;
     }
 
@@ -336,36 +347,53 @@ int main(int argc, char* argv[]) {
 
 
     /* Initial collision checking */
-    for(int i = 0; i < system_data.num_objects; i++){
-        if( !objects[i].active ){ continue; }
-        for(int j = i + 1; j < system_data.num_objects; j++){
-            if(objects[j].active)
-                check_collision(objects, i, j);
+    omp_set_num_threads(NUM_THREADS);
+    #pragma omp for
+        for(int i = 0; i < system_data.num_objects; i++){
+            if( !objects[i].active ){ continue; }
+            for(int j = i + 1; j < system_data.num_objects; j++){
+                if(objects[j].active)
+                    check_collision(objects, i, j);
+            }
         }
-    }
 
     /* Body of the simulation */
-    for(int i = 0; i < system_data.num_iterations; i++){
-        for(int foo=0; foo < system_data.num_objects * 3; foo++){force[foo] = 0;}
+    omp_set_num_threads(NUM_THREADS);
+    #pragma omp for
+        for(int i = 0; i < system_data.num_iterations; i++){
+            // clear force matrix for next iteration
+            //omp_set_num_threads(NUM_THREADS);
+            //#pragma omp for
+            for(int foo=0; foo < system_data.num_objects * 3; foo++){force[foo] = 0;}
+
             gravitational_force(system_data.num_objects, objects, system_data.time_step, force, accel);
+
+            //omp_set_num_threads(NUM_THREADS);
+            //#pragma omp for
             for(int a = 0; a < system_data.num_objects; a++){
                 if (objects[a].active)
-                    check_bounce(objects, a, system_data.size_enclosure); 
+                    check_bounce(objects, a, system_data.size_enclosure);
             }
-
-        for(int a = 0; a < system_data.num_objects; a++){
-            if(objects[a].active){
-                for(int b = a + 1; b < system_data.num_objects; b++){
-                    if (objects[b].active){
-                        check_collision(objects, a, b);
+            //omp_set_num_threads(NUM_THREADS);
+            //#pragma omp for
+            for(int a = 0; a < system_data.num_objects; a++){
+                if(objects[a].active){
+                    for(int b = a + 1; b < system_data.num_objects; b++){
+                        if (objects[b].active){
+                            check_collision(objects, a, b);
+                        }
                     }
                 }
             }
         }
-    }
 
     /* Write final configuration to a file */
     write_config(1, system_data, objects);
     free(force);
+
+    auto stop = clk::now();
+    auto diff = duration_cast<std::chrono::microseconds>(stop - start);
+    std::cout << "Time = " << diff.count() << " us\n";
+
     return 0;
 }

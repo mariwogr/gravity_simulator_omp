@@ -117,41 +117,41 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named psoa
+# Target rules for targets named paos
 
 # Build rule for target.
-psoa: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 psoa
-.PHONY : psoa
+paos: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 paos
+.PHONY : paos
 
 # fast build rule for target.
-psoa/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/psoa.dir/build.make CMakeFiles/psoa.dir/build
-.PHONY : psoa/fast
+paos/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/paos.dir/build.make CMakeFiles/paos.dir/build
+.PHONY : paos/fast
 
-psoa.o: psoa.cpp.o
-.PHONY : psoa.o
+paos.o: paos.cpp.o
+.PHONY : paos.o
 
 # target to build an object file
-psoa.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/psoa.dir/build.make CMakeFiles/psoa.dir/psoa.cpp.o
-.PHONY : psoa.cpp.o
+paos.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/paos.dir/build.make CMakeFiles/paos.dir/paos.cpp.o
+.PHONY : paos.cpp.o
 
-psoa.i: psoa.cpp.i
-.PHONY : psoa.i
+paos.i: paos.cpp.i
+.PHONY : paos.i
 
 # target to preprocess a source file
-psoa.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/psoa.dir/build.make CMakeFiles/psoa.dir/psoa.cpp.i
-.PHONY : psoa.cpp.i
+paos.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/paos.dir/build.make CMakeFiles/paos.dir/paos.cpp.i
+.PHONY : paos.cpp.i
 
-psoa.s: psoa.cpp.s
-.PHONY : psoa.s
+paos.s: paos.cpp.s
+.PHONY : paos.s
 
 # target to generate assembly for a file
-psoa.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/psoa.dir/build.make CMakeFiles/psoa.dir/psoa.cpp.s
-.PHONY : psoa.cpp.s
+paos.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/paos.dir/build.make CMakeFiles/paos.dir/paos.cpp.s
+.PHONY : paos.cpp.s
 
 # Help Target
 help:
@@ -161,10 +161,10 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... psoa"
-	@echo "... psoa.o"
-	@echo "... psoa.i"
-	@echo "... psoa.s"
+	@echo "... paos"
+	@echo "... paos.o"
+	@echo "... paos.i"
+	@echo "... paos.s"
 .PHONY : help
 
 

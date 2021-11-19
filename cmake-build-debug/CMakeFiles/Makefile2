@@ -63,7 +63,7 @@ CMAKE_BINARY_DIR = /home/sergio/repos/gravity_simulator_omp/cmake-build-debug
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/psoa.dir/all
+all: CMakeFiles/paos.dir/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
@@ -71,34 +71,34 @@ preinstall:
 .PHONY : preinstall
 
 # The main recursive "clean" target.
-clean: CMakeFiles/psoa.dir/clean
+clean: CMakeFiles/paos.dir/clean
 .PHONY : clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/psoa.dir
+# Target rules for target CMakeFiles/paos.dir
 
 # All Build rule for target.
-CMakeFiles/psoa.dir/all:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/psoa.dir/build.make CMakeFiles/psoa.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/psoa.dir/build.make CMakeFiles/psoa.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/sergio/repos/gravity_simulator_omp/cmake-build-debug/CMakeFiles --progress-num=1,2 "Built target psoa"
-.PHONY : CMakeFiles/psoa.dir/all
+CMakeFiles/paos.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/paos.dir/build.make CMakeFiles/paos.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/paos.dir/build.make CMakeFiles/paos.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/sergio/repos/gravity_simulator_omp/cmake-build-debug/CMakeFiles --progress-num=1,2 "Built target paos"
+.PHONY : CMakeFiles/paos.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/psoa.dir/rule: cmake_check_build_system
+CMakeFiles/paos.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/sergio/repos/gravity_simulator_omp/cmake-build-debug/CMakeFiles 2
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/psoa.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/paos.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/sergio/repos/gravity_simulator_omp/cmake-build-debug/CMakeFiles 0
-.PHONY : CMakeFiles/psoa.dir/rule
+.PHONY : CMakeFiles/paos.dir/rule
 
 # Convenience name for target.
-psoa: CMakeFiles/psoa.dir/rule
-.PHONY : psoa
+paos: CMakeFiles/paos.dir/rule
+.PHONY : paos
 
 # clean rule for target.
-CMakeFiles/psoa.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/psoa.dir/build.make CMakeFiles/psoa.dir/clean
-.PHONY : CMakeFiles/psoa.dir/clean
+CMakeFiles/paos.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/paos.dir/build.make CMakeFiles/paos.dir/clean
+.PHONY : CMakeFiles/paos.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.
