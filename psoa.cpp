@@ -59,21 +59,17 @@ int gravitational_force(int num_objects, set objects, double time_step, double *
     // The execution will pass through two nested loops to obtain the sum of gravitational forces of every point with
     // the other points. Analogous to take a screenshot of the system before updating speeds and positions.
 
-    //omp_set_num_threads(NUM_THREADS);
-    //#pragma omp parallel default(none) shared(num_objects, objects, time_step, force, accel, cout)
-    //{
-        double powSqX;
-        double powSqY;
-        double powSqZ;
-        double norm;
-        double fx;
-        double fy;
-        double fz;
-        //for (int i = t; i < num_objects; i = i + NUM_THREADS) {
+    double powSqX;
+    double powSqY;
+    double powSqZ;
+    double norm;
+    double fx;
+    double fy;
+    double fz;
+    omp_set_num_threads(NUM_THREADS);
+    #pragma omp for
     for (int i = 0; i < num_objects; i = i + 1) {
         if (objects.active[i]) {
-            omp_set_num_threads(NUM_THREADS);
-            #pragma omp parallel for default(none) shared(num_objects, objects, i, force, accel, cout) private(powSqX, powSqY, powSqZ, norm, fx, fy, fz)
             for (int j = i + 1; j < num_objects; j = j + 1) {
                 if (objects.active[j]) {
                     powSqX = (objects.x[j] - objects.x[i]) * (objects.x[j] - objects.x[i]);
@@ -86,38 +82,31 @@ int gravitational_force(int num_objects, set objects, double time_step, double *
                     fy = (G * objects.m[i] * objects.m[j] * (objects.y[j] - objects.y[i])) / (norm * norm * norm);
                     fz = (G * objects.m[i] * objects.m[j] * (objects.z[j] - objects.z[i])) / (norm * norm * norm);
 
-                    //#pragma omp critical
-                    //cout << omp_get_thread_num() << " " << i << " " << j << " " << fx << endl;
-
                     force[3 * i] += fx;
                     force[3 * i + 1] += fy;
                     force[3 * i + 2] += fz;
                     force[3 * j] -= fx;
                     force[3 * j + 1] -= fy;
                     force[3 * j + 2] -= fz;
-                    //#pragma omp critical
-                    //cout << omp_get_thread_num() << " " << i << " " << force[3 * i] << endl;
                 }
             }
         }
     }
     // Once we have a screenshot of the system in force array, update each active object
+
+    omp_set_num_threads(NUM_THREADS);
+    #pragma omp for
     for (int i = 0; i < num_objects; i++) {
         if(objects.active[i]) {
-            //cout << i << endl;
             // Updates the acceleration
             accel[0] = 1.0/objects.m[i] * force[i * 3];
             accel[1] = 1.0/objects.m[i] * force[(i * 3) + 1];
             accel[2] = 1.0/objects.m[i] * force[(i * 3) + 2];
-            //cout << "------------------" << endl;
-            //cout << objects.m[i] << " " << force[i * 3] << " " << accel[0] << endl;
 
             // Updates the speed
-            //cout << objects.vx[i] << endl;
             objects.vx[i] = objects.vx[i] + accel[0] * time_step;
             objects.vy[i] = objects.vy[i] + accel[1] * time_step;
             objects.vz[i] = objects.vz[i] + accel[2] * time_step;
-            //cout << objects.vx[i] << endl;
             // Updates the position
             objects.x[i] = objects.x[i] + objects.vx[i] * time_step;
             objects.y[i] = objects.y[i] + objects.vy[i] * time_step;
@@ -138,8 +127,7 @@ int gravitational_force(int num_objects, set objects, double time_step, double *
  */
 int check_bounce(set objects, int obj, double size){
 
-    //check if the object bounce with a wall
-
+    //check if the object bounces against a wall
     if(objects.x[obj] <= 0){
         objects.x[obj] = 0;
         objects.vx[obj] = -1 * objects.vx[obj];
@@ -169,7 +157,6 @@ int check_bounce(set objects, int obj, double size){
         objects.z[obj] = size;
         objects.vz[obj] = -1 * objects.vz[obj];
     }
-
     return 0;
 }
 
@@ -267,12 +254,11 @@ int write_config(int id, parameters system_data, set objects){
     ofstream out_file;
     char res[5001];
 
-    /*If the id is 0 it will write the content in the init_config file*/
-    if (id == 0){
+    // write to init_config or final_config depending on the id
+    if (id == 0)
         out_file.open("init_config.txt");
-    }
-        /*If the id is different from 0 the content will be written in the final_config file*/
-    else { out_file.open("final_config.txt"); }
+    else
+        out_file.open("final_config.txt");
 
     sprintf(res, "%.3f ", system_data.size_enclosure);
     out_file << res;
@@ -285,7 +271,8 @@ int write_config(int id, parameters system_data, set objects){
         if(objects.active[i]) {
             sprintf(res,
                     "%.3f %.3f %.3f %.3f %.3f %.3f %.3f",
-                    objects.x[i], objects.y[i], objects.z[i], objects.vx[i], objects.vy[i], objects.vz[i],
+                    objects.x[i], objects.y[i], objects.z[i],
+                    objects.vx[i], objects.vy[i], objects.vz[i],
                     objects.m[i]);
             out_file << res << endl;
         }
@@ -359,6 +346,8 @@ int main(int argc, char* argv[]) {
     write_config(0, system_data, objects);
 
     /* Initial collision checking */
+    omp_set_num_threads(NUM_THREADS);
+    #pragma omp for
     for(int i = 0; i < system_data.num_objects; i++){
         if( !objects.active[i] ){ continue; }
         for(int j = i + 1; j < system_data.num_objects; j++){
@@ -368,6 +357,8 @@ int main(int argc, char* argv[]) {
     }
 
     /* Body of the simulation */
+    omp_set_num_threads(NUM_THREADS);
+    #pragma omp for
     for(int i = 0; i < system_data.num_iterations; i++){
         for(int foo=0; foo < system_data.num_objects * 3; foo++){force[foo] = 0;}
         gravitational_force(system_data.num_objects, objects, system_data.time_step, force, accel);

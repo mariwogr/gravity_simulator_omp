@@ -117,41 +117,41 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named paos
+# Target rules for targets named psoa
 
 # Build rule for target.
-paos: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 paos
-.PHONY : paos
+psoa: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 psoa
+.PHONY : psoa
 
 # fast build rule for target.
-paos/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/paos.dir/build.make CMakeFiles/paos.dir/build
-.PHONY : paos/fast
+psoa/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/psoa.dir/build.make CMakeFiles/psoa.dir/build
+.PHONY : psoa/fast
 
-paos.o: paos.cpp.o
-.PHONY : paos.o
+psoa.o: psoa.cpp.o
+.PHONY : psoa.o
 
 # target to build an object file
-paos.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/paos.dir/build.make CMakeFiles/paos.dir/paos.cpp.o
-.PHONY : paos.cpp.o
+psoa.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/psoa.dir/build.make CMakeFiles/psoa.dir/psoa.cpp.o
+.PHONY : psoa.cpp.o
 
-paos.i: paos.cpp.i
-.PHONY : paos.i
+psoa.i: psoa.cpp.i
+.PHONY : psoa.i
 
 # target to preprocess a source file
-paos.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/paos.dir/build.make CMakeFiles/paos.dir/paos.cpp.i
-.PHONY : paos.cpp.i
+psoa.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/psoa.dir/build.make CMakeFiles/psoa.dir/psoa.cpp.i
+.PHONY : psoa.cpp.i
 
-paos.s: paos.cpp.s
-.PHONY : paos.s
+psoa.s: psoa.cpp.s
+.PHONY : psoa.s
 
 # target to generate assembly for a file
-paos.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/paos.dir/build.make CMakeFiles/paos.dir/paos.cpp.s
-.PHONY : paos.cpp.s
+psoa.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/psoa.dir/build.make CMakeFiles/psoa.dir/psoa.cpp.s
+.PHONY : psoa.cpp.s
 
 # Help Target
 help:
@@ -161,10 +161,10 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... paos"
-	@echo "... paos.o"
-	@echo "... paos.i"
-	@echo "... paos.s"
+	@echo "... psoa"
+	@echo "... psoa.o"
+	@echo "... psoa.i"
+	@echo "... psoa.s"
 .PHONY : help
 
 
