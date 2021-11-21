@@ -66,8 +66,7 @@ int gravitational_force(int num_objects, set objects, double time_step, double *
     double fx;
     double fy;
     double fz;
-    omp_set_num_threads(NUM_THREADS);
-    #pragma omp for
+
     for (int i = 0; i < num_objects; i = i + 1) {
         if (objects.active[i]) {
             for (int j = i + 1; j < num_objects; j = j + 1) {
@@ -94,8 +93,6 @@ int gravitational_force(int num_objects, set objects, double time_step, double *
     }
     // Once we have a screenshot of the system in force array, update each active object
 
-    omp_set_num_threads(NUM_THREADS);
-    #pragma omp for
     for (int i = 0; i < num_objects; i++) {
         if(objects.active[i]) {
             // Updates the acceleration
@@ -357,9 +354,11 @@ int main(int argc, char* argv[]) {
     }
 
     /* Body of the simulation */
+
     omp_set_num_threads(NUM_THREADS);
     #pragma omp for
     for(int i = 0; i < system_data.num_iterations; i++){
+
         for(int foo=0; foo < system_data.num_objects * 3; foo++){force[foo] = 0;}
         gravitational_force(system_data.num_objects, objects, system_data.time_step, force, accel);
 
@@ -367,6 +366,7 @@ int main(int argc, char* argv[]) {
             if (objects.active[a])
                 check_bounce(objects, a, system_data.size_enclosure);
         }
+
         for(int a = 0; a < system_data.num_objects; a++){
             if(objects.active[a]){
                 for(int b = a + 1; b < system_data.num_objects; b++){
