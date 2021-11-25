@@ -12,7 +12,7 @@
 #define INVALID_SIZE     16
 #define INVALID_TIME_STP 32
 #define G (6.674 * 1E-11)
-#define NUM_THREADS 8
+#define NUM_THREADS 2
 
 struct parameters {
     const int num_objects;

@@ -68,6 +68,8 @@ int gravitational_force(int num_objects, set *objects, double time_step, double 
     
     // The execution will pass through two nested loops to obtain the sum of gravitational forces of every point with
     // the other points. Analogous to take a screenshot of the system before updating speeds and positions.
+
+
     for (int i = 0; i < num_objects; i++) {
         if (objects[i].active) {
             for (int j = i + 1; j < num_objects; j++) {
@@ -92,6 +94,7 @@ int gravitational_force(int num_objects, set *objects, double time_step, double 
             }
         }
     }
+
     // Once we have a screenshot of the system in force array, update each active
     for (int i = 0; i < num_objects; i++) {
         if(objects[i].active) {
@@ -267,6 +270,8 @@ int write_config(int id, parameters system_data, set *objects){
     sprintf(res, "%d", system_data.num_objects);
     out_file << res << endl;
 
+    omp_set_num_threads(NUM_THREADS);
+    #pragma omp parallel for default(none) shared(system_data,objects,res,out_file)
     for(int i = 0; i < system_data.num_objects; i++){
         if(objects[i].active) {
             sprintf(res,
@@ -321,7 +326,7 @@ int main(int argc, char* argv[]) {
     uniform_real_distribution<> position_unif_dist(0, system_data.size_enclosure);
     normal_distribution<> mass_norm_dist{1E21, 1E15};
 
-    double *force = (double *) malloc(sizeof(double) * system_data.num_objects * 3);
+    auto *force = (double *) malloc(sizeof(double) * system_data.num_objects * 3);
     double accel[3] = {0,0,0};
 
     /* Initialize x, y, z and m attributes of each object */
@@ -343,7 +348,7 @@ int main(int argc, char* argv[]) {
 
     /* Initial collision checking */
     omp_set_num_threads(NUM_THREADS);
-    #pragma omp for
+    #pragma omp parallel for default(none) shared(system_data,objects)
     for(int i = 0; i < system_data.num_objects; i++){
         if( !objects[i].active ){ continue; }
         for(int j = i + 1; j < system_data.num_objects; j++){
@@ -353,13 +358,13 @@ int main(int argc, char* argv[]) {
     }
 
     /* Body of the simulation */
-    omp_set_num_threads(NUM_THREADS);
-    #pragma omp for
     for(int i = 0; i < system_data.num_iterations; i++){
+
         // clear force matrix for next iteration
         for(int foo=0; foo < system_data.num_objects * 3; foo++){force[foo] = 0;}
 
         gravitational_force(system_data.num_objects, objects, system_data.time_step, force, accel);
+
 
         for(int a = 0; a < system_data.num_objects; a++){
             if (objects[a].active)

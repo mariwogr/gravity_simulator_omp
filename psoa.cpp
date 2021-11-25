@@ -264,6 +264,9 @@ int write_config(int id, parameters system_data, set objects){
     sprintf(res, "%d", system_data.num_objects);
     out_file << res << endl;
 
+
+    omp_set_num_threads(NUM_THREADS);
+    #pragma omp parallel for default(none) shared(system_data,objects,res,out_file)
     for(int i = 0; i < system_data.num_objects; i++){
         if(objects.active[i]) {
             sprintf(res,
@@ -343,8 +346,9 @@ int main(int argc, char* argv[]) {
     write_config(0, system_data, objects);
 
     /* Initial collision checking */
+
     omp_set_num_threads(NUM_THREADS);
-    #pragma omp for
+    #pragma omp parallel for default(none) shared(system_data,objects)
     for(int i = 0; i < system_data.num_objects; i++){
         if( !objects.active[i] ){ continue; }
         for(int j = i + 1; j < system_data.num_objects; j++){
@@ -355,8 +359,6 @@ int main(int argc, char* argv[]) {
 
     /* Body of the simulation */
 
-    omp_set_num_threads(NUM_THREADS);
-    #pragma omp for
     for(int i = 0; i < system_data.num_iterations; i++){
 
         for(int foo=0; foo < system_data.num_objects * 3; foo++){force[foo] = 0;}
